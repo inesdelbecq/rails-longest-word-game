@@ -8,6 +8,7 @@ class GamesController < ApplicationController
 
   def score
     @answer = ""
+    @score = 0
     words = params[:grid]
     grid = params[:word]
 
@@ -15,12 +16,17 @@ class GamesController < ApplicationController
     json = JSON.parse(response.read)
     result = json['found']
 
+    words.chars.each do |letter|
+      grid.include?(letter)
+      @score += 1
+    end
+
     if !words.chars.all? { |letter| grid.include?(letter) }
       @answer = "Sorry but #{words} cannot be built out of #{grid}"
     elsif result == false
       @answer = "Not an english word !"
     else
-      @answer = "Well done!"
+      @answer = "Well done ! Your score is #{@score}"
     end
   end
 end
